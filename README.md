@@ -25,7 +25,7 @@
 
 | 能力 | 说明 | 调用的麦当劳 MCP 工具 |
 | --- | --- | --- |
-| **查询** | 拉取积分 / 券 / 订单真实数据 | `query-my-account`、`query-my-coupons`、`available-coupons`、`order-list`、`mall-order-list` |
+| **查询** | 拉取积分 / 券 / 订单真实数据 | `query-my-account`、`query-my-coupons`、`available-coupons`、`order-list` |
 | **优化** | 积分过期前最优用法、券组合建议 | `mall-points-products`、`query-lottery-info`、`query-my-coupons`（结合订单金额） |
 | **监控** | 新券 / 活动 / 积分临期主动提醒 | `available-coupons`、`campaign-calendar`、`query-my-account` |
 
@@ -68,18 +68,35 @@ python -m mcd_asset_assistant --monitor
 
 > 也可加 `--out report.md` 把结果写入文件；`--format html` / `card` 可生成网页报告或分享卡片。
 
-## 示例输出（离线演示）
+## 示例输出（真实账户运行）
+
+> 以下为接入 `mcd-mcp` 连接器、执行 `python -m mcd_asset_assistant --query --format md` 的真实输出：
 
 ```
 # 🍔 麦门资产报告
+> 生成时间：2026-10-22 15:30:18　数据源：mcd-mcp (real)
+
 ## 一、积分资产
-- 可用积分：3280　累计：9120
-- 即将过期：1500 分（2026-11-03）
-- ⏰ 1500 积分将在 12 天后过期，建议尽快使用。
-  - 💡 用临期积分兑换「巨无霸兑换券」（1500 分），不浪费。
+- 可用积分：3353　累计：9393　冻结：0
+- 即将过期：0 分（—）
+- ✅ 当前没有即将过期的积分，可安心累积。
+
 ## 二、优惠券
-- 名下券合计价值约 ¥35 ……
+- 名下券合计价值约 ¥39
+  - 名下共 4 张券，合计价值约 ¥39。
+  - 优先用掉 7 天内过期的：11.9元麦辣鸡腿堡、19.9元王牌炸鸡任选2、9.9元中杯冰美式、人气麦旋风买一送一。
+  - 大额订单优先叠加「19.9元王牌炸鸡任选2」（¥19）。
+
+## 三、消费洞察
+- 近 10 笔订单累计 ¥387.8，均价 ¥38.8。
+
+## 四、下一步行动
+1. 先处理临期积分与临期券，避免无偿作废。
+2. 大额订单优先叠加高价值券。
+3. 关注麦麦省新券与本月活动，主动领取。
 ```
+
+> 想看离线效果无需 Token：直接 `python -m mcd_asset_assistant --demo --format md` 即可。`--format html` 可生成网页报告，`--format card` 生成可分享卡片。
 
 ## 目标用户
 
