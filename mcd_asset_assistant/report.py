@@ -21,7 +21,7 @@ def build_report(profile: dict) -> dict:
         "",
         "## 一、积分资产",
         f"- 可用积分：**{pts['available']}**　累计：{pts['accumulated']}　冻结：{pts['frozen']}",
-        f"- 即将过期：**{pts['expiring']}** 分（{pts['expiring_date'] or '未知'}）",
+        f"- 即将过期：**{pts['expiring']}** 分（{pts['expiring_date'] or '—'}）",
         f"- {pts['alert']}",
     ]
     for s in pts["suggestions"]:

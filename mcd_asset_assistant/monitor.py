@@ -8,14 +8,21 @@ from __future__ import annotations
 from .adapter import McDMCPClient
 
 
+def _as_int(v, default: int = 0) -> int:
+    try:
+        return int(float(v))
+    except (TypeError, ValueError):
+        return default
+
+
 def scan_once(client: McDMCPClient) -> list[dict]:
     alerts: list[dict] = []
 
     # 1) 临期积分
     try:
         acc = client.call_tool("query-my-account") or {}
-        expiring = acc.get("expiringPoints") or acc.get("expiring") or 0
-        if expiring:
+        expiring = _as_int(acc.get("currentMouthExpirePoint") or acc.get("expiringPoints") or acc.get("expiring"))
+        if expiring > 0:
             alerts.append({
                 "type": "points_expiring",
                 "level": "high",
@@ -27,12 +34,12 @@ def scan_once(client: McDMCPClient) -> list[dict]:
     # 2) 新可领券
     try:
         avail = client.call_tool("available-coupons") or []
-        avail = avail if isinstance(avail, list) else avail.get("list", [])
+        avail = avail if isinstance(avail, list) else []
         if avail:
             alerts.append({
                 "type": "new_coupons",
                 "level": "normal",
-                "text": f"麦麦省有 {len(avail)} 张券可一键领取，例如：{avail[0].get('name', '')}。",
+                "text": f"麦麦省有 {len(avail)} 张券可一键领取，例如：{avail[0].get('couponName', avail[0].get('name', ''))}。",
             })
     except Exception:  # noqa: BLE001
         pass
@@ -40,7 +47,7 @@ def scan_once(client: McDMCPClient) -> list[dict]:
     # 3) 当月活动日历
     try:
         cal = client.call_tool("campaign-calendar") or {}
-        campaigns = cal.get("campaigns") or cal.get("list") or []
+        campaigns = (cal.get("dailyList") or []) + (cal.get("subscribedEvents") or [])
         if campaigns:
             alerts.append({
                 "type": "campaign",

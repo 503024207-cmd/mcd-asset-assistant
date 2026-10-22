@@ -15,14 +15,27 @@ MCD_MCP_URL = os.getenv("MCD_MCP_URL", "https://mcp.mcd.cn")
 MCD_MCP_TOKEN = os.getenv("MCD_MCP_TOKEN", "")
 
 
+def _load_token_from_mcp_json() -> str:
+    """回退：从 WorkBuddy 连接器配置 ~/.workbuddy/mcp.json 读取 Bearer Token。"""
+    try:
+        p = os.path.join(os.path.expanduser("~"), ".workbuddy", "mcp.json")
+        with open(p, encoding="utf-8") as f:
+            cfg = json.load(f)
+        hdr = cfg["mcpServers"]["mcd-mcp"]["headers"]["Authorization"]
+        return hdr.split(" ", 1)[1].strip()
+    except Exception:
+        return ""
+
+
 class McDMCPClient:
     """最小可用的麦当劳 MCP (Streamable HTTP) 客户端。"""
 
     def __init__(self, token: str | None = None, url: str | None = None, timeout: int = 30):
         self.url = url or MCD_MCP_URL
-        self.token = token or MCD_MCP_TOKEN
+        self.token = token or MCD_MCP_TOKEN or _load_token_from_mcp_json()
         if not self.token:
-            raise RuntimeError("缺少 MCD_MCP_TOKEN，请在环境变量中配置麦当劳 MCP Token。")
+            raise RuntimeError("缺少 MCD_MCP_TOKEN，请在环境变量中配置麦当劳 MCP Token，"
+                               "或确保 ~/.workbuddy/mcp.json 已配置麦当劳连接器。")
         self.session = requests.Session()
         self.session.headers.update({
             "Authorization": f"Bearer {self.token}",
@@ -76,13 +89,21 @@ class McDMCPClient:
             "params": {"name": name, "arguments": arguments or {}},
         }
         res = self._post(payload)
-        # MCP tool 结果通常包在 result.content[].text（JSON 字符串）中
         result = res.get("result", res)
-        content = result.get("content") if isinstance(result, dict) else None
-        if isinstance(content, list) and content:
-            text = content[0].get("text", "")
-            try:
-                return json.loads(text)
-            except (json.JSONDecodeError, TypeError):
-                return {"text": text}
+        # 麦当劳 MCP 的干净结构化数据在 result.structuredContent.data
+        if isinstance(result, dict):
+            sc = result.get("structuredContent")
+            if isinstance(sc, dict):
+                data = sc.get("data")
+                if isinstance(data, (dict, list)):
+                    return data
+                return sc
+            # 回退：部分实现把数据放在 result.content[].text（可能是 JSON 或自然语言）
+            content = result.get("content")
+            if isinstance(content, list) and content:
+                text = content[0].get("text", "")
+                try:
+                    return json.loads(text)
+                except (json.JSONDecodeError, TypeError):
+                    return {"text": text}
         return result

@@ -23,13 +23,18 @@ def analyze_points(profile: dict) -> dict:
     exp_date = acc.get("expiring_date")
     days = _days_left(exp_date)
     alert = ""
-    if expiring and days is not None:
-        if days <= 0:
-            alert = f"⚠️ 有 {expiring} 积分已过期作废！"
-        elif days <= 15:
-            alert = f"⏰ {expiring} 积分将在 {days} 天后（{exp_date}）过期，建议尽快使用。"
+    if expiring:
+        if days is not None:
+            if days <= 0:
+                alert = f"⚠️ 有 {expiring} 积分已过期作废！"
+            elif days <= 15:
+                alert = f"⏰ {expiring} 积分将在 {days} 天后（{exp_date}）过期，建议尽快使用。"
+            else:
+                alert = f"✅ {expiring} 积分将于 {exp_date} 过期，尚有余量。"
         else:
-            alert = f"✅ {expiring} 积分将于 {exp_date} 过期，尚有余量。"
+            alert = f"⏰ 有 {expiring} 积分即将过期，建议尽快使用。"
+    else:
+        alert = "✅ 当前没有即将过期的积分，可安心累积。"
     # 处置建议：优先用掉临期积分
     mall = profile.get("mall_products", [])
     lottery = profile.get("lottery", {})
