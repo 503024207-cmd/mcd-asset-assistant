@@ -109,6 +109,7 @@ python -m mcd_asset_assistant --monitor
 ```
 mcd-asset-assistant/
 ├── README.md                 # 本文件
+├── LICENSE                   # MIT 许可证
 ├── CONTEST_DECLARATION.md    # 参赛声明（官方原文，勿改）
 ├── MCP_INTEGRATION.md        # MCP 接入说明（必交）
 ├── mcp-config.example.json   # 脱敏配置示例（必交）
