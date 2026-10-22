@@ -3,7 +3,13 @@
 > 把你的麦当劳**积分、优惠券、订单**，当成一笔会贬值的「资产」管起来。
 > 查询 · 优化 · 监控，三层合一。麦当劳程序员节创意开发大赛作品（非官方）。
 
----
+## 🎮 先试玩，30 秒看到效果
+
+**打开 `demo/index.html`**（双击即可，无需安装、无需 Token、无需联网），填入你的积分和优惠券，点一下「生成报告」——就能看到你的积分会不会过期、券该怎么花、报告会给你什么建议。
+
+> 或者看 `demo/index.html` 的在线版（如果本仓库有发布链接，直接点上面的 Demo 链接）。
+
+这个离线试玩页是本项目为「让人 30 秒理解价值」专门做的：**不需要接入麦当劳账号就能玩**，也是给 README 快速体验用的。
 
 ## 这是什么
 
@@ -117,6 +123,9 @@ mcd-asset-assistant/
 ├── SKILL.md                  # WorkBuddy Skill 定义
 ├── ARCHITECTURE.md           # 扩展性设计
 ├── DEVELOPMENT_PLAN.md       # 3 天冲刺排期
+├── SUBMISSION.md             # 报名 Issue 文案
+├── demo/
+│   └── index.html            # 🎮 交互试玩页（双击即开，零依赖）
 └── mcd_asset_assistant/      # 源码
     ├── adapter.py            # 麦当劳 MCP 适配器（数据源隔离层）
     ├── collector.py          # 真实数据采集 → 归一化 profile

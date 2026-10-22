@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>麦门资产助手 · 交互试玩</title>
+<style>
+  :root{
+    --bg:#f7f5f0; --card:#ffffff; --ink:#2c2c2a; --ink2:#5f5e5a; --ink3:#888780;
+    --line:#e5e2da; --brand:#d85a30; --brand2:#993c1d; --gold:#ba7517;
+    --ok:#3b6d11; --okbg:#eaf3de; --warn:#854f0b; --warnbg:#faeeda;
+    --bad:#a32d2d; --badbg:#fcebeb; --blue:#185fa5; --bluebg:#e6f1fb;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:400 15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;padding:0 0 60px}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  header{background:linear-gradient(135deg,#d85a30,#993c1d);color:#fff;padding:38px 20px 34px;text-align:center}
+  header .wrap{padding:0}
+  h1{font-size:26px;font-weight:600;letter-spacing:-.3px}
+  .tag{font-size:13.5px;opacity:.92;margin-top:8px}
+  .badges{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .badges span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:3px 12px;font-size:12.5px}
+  main{margin-top:22px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card h2{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--brand);flex:none}
+  .hint{font-size:13px;color:var(--ink2);margin-bottom:12px}
+  label{display:block;font-size:12.5px;color:var(--ink2);margin:11px 0 5px;font-weight:500}
+  input[type=number],input[type=text],select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;background:#fff;color:var(--ink);font-family:inherit}
+  input:focus,select:focus{outline:2px solid #f0997b;outline-offset:-1px;border-color:var(--brand)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .btn{background:var(--brand);color:#fff;border:none;border-radius:9px;padding:11px 18px;font-size:14.5px;font-weight:500;cursor:pointer;font-family:inherit;width:100%;margin-top:16px;transition:background .15s}
+  .btn:hover{background:var(--brand2)}
+  .btn.sec{background:transparent;color:var(--ink2);border:1px solid var(--line);margin-top:8px}
+  .btn.sec:hover{background:#faf9f6;color:var(--ink)}
+  .coupon{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;margin-bottom:8px;background:#fdfcfa}
+  .coupon .nm{font-size:13.5px;flex:1}
+  .coupon .vl{font-size:13px;color:var(--ink2);white-space:nowrap}
+  .coupon .rm{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:16px;padding:0 2px;line-height:1}
+  .coupon .rm:hover{color:var(--bad)}
+  .addrow{display:grid;grid-template-columns:1fr 82px 34px;gap:8px;margin-top:8px}
+  output{display:block;margin-top:20px}
+  .rep{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .rep h3{font-size:15px;font-weight:600;margin:16px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .rep h3:first-child{margin-top:0}
+  .rep .kv{font-size:14px;color:var(--ink2);margin:5px 0}
+  .rep .kv b{color:var(--ink);font-weight:600}
+  .alert{border-radius:9px;padding:11px 13px;font-size:13.5px;margin:9px 0}
+  .alert.ok{background:var(--okbg);color:var(--ok)}
+  .alert.warn{background:var(--warnbg);color:var(--warn)}
+  .alert.bad{background:var(--badbg);color:var(--bad)}
+  .alert.info{background:var(--bluebg);color:var(--blue)}
+  ul.acts{margin:8px 0 0 18px;font-size:14px}
+  ul.acts li{margin:5px 0}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:20px;padding:6px 13px;font-size:13px;cursor:pointer;color:var(--ink2);font-family:inherit}
+  .chip:hover{border-color:var(--brand);color:var(--brand)}
+  footer{text-align:center;margin-top:30px;font-size:13px;color:var(--ink3);line-height:1.9}
+  footer a{color:var(--brand);text-decoration:none;font-weight:500}
+  .stamp{font-size:12px;color:var(--ink3);margin-top:9px}
+  .hidden{display:none}
+  .steps{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+  .step{font-size:12.5px;padding:4px 11px;border-radius:20px;background:#f1efe8;color:var(--ink3)}
+  .step.on{background:var(--brand);color:#fff}
+  .step.done{background:var(--okbg);color:var(--ok)}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>🍔 麦门资产助手</h1>
+    <p class="tag">把你的积分、优惠券、订单，当成一笔会贬值的资产来管</p>
+    <div class="badges">
+      <span>基于麦当劳 MCP 真实数据</span>
+      <span>查询 · 优化 · 监控</span>
+      <span>纯只读，不自动下单</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="steps">
+    <div class="step on" id="s1">1 · 调整你的资产</div>
+    <div class="step" id="s2">2 · 生成报告</div>
+    <div class="step" id="s3">3 · 处置建议</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2><span class="dot"></span>你的积分</h2>
+      <div class="hint">改成你真实的情况，看看报告会说什么。</div>
+      <div class="row">
+        <div>
+          <label>可用积分</label>
+          <input type="number" id="avail" value="3280">
+        </div>
+        <div>
+          <label>累计获得</label>
+          <input type="number" id="accum" value="9120">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>本月将过期</label>
+          <input type="number" id="exp" value="1500">
+        </div>
+        <div>
+          <label>冻结积分</label>
+          <input type="number" id="frozen" value="0">
+        </div>
+      </div>
+
+      <h2 style="margin-top:20px"><span class="dot"></span>你的优惠券</h2>
+      <div class="hint">面额从券名里自动识别，也可以手填。</div>
+      <div id="coupons"></div>
+      <div class="addrow">
+        <input type="text" id="cn" placeholder="如：11.9元麦辣鸡腿堡">
+        <input type="number" id="cv" placeholder="面值" title="面值">
+        <button class="rm" id="addc" title="添加" style="background:#f1efe8;border:none;border-radius:8px;cursor:pointer;font-size:16px;color:var(--ink2)">+</button>
+      </div>
+
+      <h2 style="margin-top:20px"><span class="dot"></span>最近消费</h2>
+      <div class="row">
+        <div>
+          <label>订单笔数</label>
+          <input type="number" id="on" value="10">
+        </div>
+        <div>
+          <label>累计金额 (¥)</label>
+          <input type="number" id="oa" value="387.8" step="0.1">
+        </div>
+      </div>
+
+      <button class="btn" id="go">生成我的麦门资产报告 →</button>
+      <button class="btn sec" id="reset">恢复示例数据</button>
+    </div>
+
+    <div class="card">
+      <h2><span class="dot"></span>试试这些问题</h2>
+      <div class="hint">点一下，看助手怎么答。</div>
+      <div class="chips">
+        <button class="chip" data-q="exp">我的积分会过期吗？</button>
+        <button class="chip" data-q="coupon">券怎么用最划算？</button>
+        <button class="chip" data-q="insight">我花得多吗？</button>
+        <button class="chip" data-q="all">来份完整报告</button>
+      </div>
+      <div id="chat" style="font-size:14px;line-height:1.75">
+        <div class="alert info">👋 我是麦门资产助手。左边填你的数据，或点上面任意一个问题。</div>
+      </div>
+    </div>
+  </div>
+
+  <output id="out"></output>
+
+  <footer>
+    <div>🍔 <a href="https://github.com/503024207-cmd/mcd-asset-assistant" target="_blank">GitHub 开源项目</a> · 麦当劳程序员节创意开发大赛作品</div>
+    <div>本页面为离线演示（示例数据）。真实项目通过麦当劳 MCP 读取你的账户数据，全程只读，不自动下单。</div>
+    <div>非官方产品，仅供参考，以麦当劳官方渠道为准。</div>
+  </footer>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let coupons = [
+  {n:"麦辣鸡腿堡买一送一", v:22, e:3},
+  {n:"满40减8 通用券", v:8, e:9},
+  {n:"薯条中份立减5", v:5, e:20}
+];
+
+function drawCoupons(){
+  $("coupons").innerHTML = coupons.map((c,i)=>`
+    <div class="coupon">
+      <span class="nm">${esc(c.n)}</span>
+      <span class="vl">¥${c.v} · ${c.e}天后过期</span>
+      <button class="rm" data-i="${i}" title="移除">×</button>
+    </div>`).join("");
+  document.querySelectorAll(".rm[data-i]").forEach(b=>b.onclick=()=>{
+    coupons.splice(+b.dataset.i,1); drawCoupons();
+  });
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+function collect(){
+  return {
+    avail:+$("avail").value||0, accum:+$("accum").value||0,
+    exp:+$("exp").value||0, frozen:+$("frozen").value||0,
+    coupons:coupons.slice(), orders:+$("on").value||0, amount:+$("oa").value||0
+  };
+}
+
+function report(d){
+  const cv = d.coupons.reduce((s,c)=>s+c.v,0);
+  const soon = d.coupons.filter(c=>c.e<=7);
+  const best = d.coupons.slice().sort((a,b)=>b.v-a.v)[0];
+  const avg = d.orders ? (d.amount/d.orders) : 0;
+  const near = best ? best : null;
+  let h = `<div class="rep"><h3 style="border:none;padding:0;margin:0 0 4px;font-size:17px">🍔 麦门资产报告</h3>
+  <div class="stamp">生成于 ${new Date().toLocaleString("zh-CN",{hour12:false})}　数据源：离线演示</div>`;
+
+  h += `<h3>一、积分资产</h3>
+  <div class="kv">可用积分：<b>${d.avail}</b>　累计：<b>${d.accum}</b>　冻结：<b>${d.frozen}</b></div>
+  <div class="kv">即将过期：<b>${d.exp}</b> 分</div>`;
+  if(d.exp>0){
+    h += `<div class="alert warn">⏰ 有 <b>${d.exp}</b> 积分即将过期，继续放着会作废。优先用掉它，别让它白白消失。</div>`;
+    if(near && near.v>=1500) h += `<div class="kv">💡 可兑换「巨无霸兑换券」（1500 分）——刚好够，不浪费。</div>`;
+    else if(d.exp>=1500) h += `<div class="kv">💡 可兑换「巨无霸兑换券」（1500 分）或参与积分抽奖。</div>`;
+    else h += `<div class="kv">💡 ${d.exp} 分不足以兑换整物，建议参与积分抽奖或凑单使用。</div>`;
+  } else {
+    h += `<div class="alert ok">✅ 当前没有即将过期的积分，可以安心累积。</div>`;
+  }
+
+  h += `<h3>二、优惠券</h3>
+  <div class="kv">名下共 <b>${d.coupons.length}</b> 张券，合计价值约 <b>¥${cv}</b></div>`;
+  if(d.coupons.length){
+    if(soon.length) h += `<div class="alert warn">⏰ 优先用掉 ${soon.length} 天内过期的：${soon.map(c=>esc(c.n)).join("、")}</div>`;
+    else h += `<div class="alert ok">✅ 没有 7 天内过期的券，不急。</div>`;
+    if(best && avg && best.v>avg) h += `<div class="kv">📌 「${esc(best.n)}」（¥${best.v}）高于你的客单价 ¥${avg.toFixed(1)}，建议留着点大额订单用。</div>`;
+    else if(best) h += `<div class="kv">📌 「${esc(best.n)}」（¥${best.v}）可与日常订单直接抵扣。</div>`;
+  } else {
+    h += `<div class="kv">名下暂无可用券。</div>`;
+  }
+
+  h += `<h3>三、消费洞察</h3>`;
+  if(d.orders>0){
+    h += `<div class="kv">近 ${d.orders} 笔订单累计 <b>¥${d.amount.toFixed(1)}</b>，均价 <b>¥${avg.toFixed(1)}</b></div>`;
+    const tip = avg<30 ? "客单价偏低，高价值券别浪费在小单上——建议攒着点大份或拼单。"
+             : avg<50 ? "客单价中等，正好是多数券的甜区区间，优先把券用在 40 元以上的单子。"
+             : "客单价较高，大部分券的抵扣上限对你影响有限，重点关注临期积分别作废。";
+    h += `<div class="kv">${tip}</div>`;
+  } else h += `<div class="kv">暂无订单记录。</div>`;
+
+  h += `<h3>四、下一步行动</h3><ul class="acts">
+  <li>${d.exp>0 ? "先处理临期积分，别让它作废" : "积分暂无过期压力，可考虑兑换心仪商品"}</li>
+  <li>${soon.length ? "把 "+soon.length+" 张临期券优先消耗掉" : "大额订单优先叠加高价值券"}</li>
+  <li>关注麦麦省新券与本月活动，主动领取</li>
+  </ul></div>`;
+  return h;
+}
+
+function answer(d, kind){
+  const cv = d.coupons.reduce((s,c)=>s+c.v,0);
+  const soon = d.coupons.filter(c=>c.e<=7);
+  const best = d.coupons.slice().sort((a,b)=>b.v-a.v)[0];
+  const avg = d.orders ? d.amount/d.orders : 0;
+  if(kind==="exp"){
+    return d.exp>0
+      ? `会过期。你有 <b>${d.exp} 分</b>本月到期。${d.exp>=1500?"建议直接换「巨无霸兑换券」（1500 分），刚好够。":"积分商城里最划算的入手门槛约 1500 分，差一点的话可以先看看抽奖。"}`
+      : `不会。你当前可用 ${d.avail} 分，本月过期数为 0，安心累积即可。`;
+  }
+  if(kind==="coupon"){
+    if(!d.coupons.length) return "你名下暂时没有券。等麦麦省有新券时我会提醒你。";
+    return `名下 ${d.coupons.length} 张、合计约 ¥${cv}。${soon.length?`其中 ${soon.length} 张 7 天内过期（${soon.map(c=>esc(c.n)).join("、")}），先吃掉。`:""}${best?`最高价值的是「${esc(best.n)}」（¥${best.v}）${avg&&best.v>avg?"，高于你的客单价，留给大额订单":""}。`:""}`;
+  }
+  if(kind==="insight"){
+    if(!d.orders) return "还没有订单记录，先下一单再来找我。";
+    return `近 ${d.orders} 笔共 ¥${d.amount.toFixed(1)}，均价 ¥${avg.toFixed(1)}。${avg<30?"单价偏低——把好券留着点大单，别用在小单上。":avg<50?"单价中等，正好是券最划算的区间。":"单价较高，券的抵扣意义不大，重点盯住临期积分。"}`;
+  }
+  return `已生成完整报告，见右侧 ⬇️ 核心结论：${d.exp>0?`${d.exp} 分即将过期，建议尽快用掉。`:"积分无过期压力。"}券 ${d.coupons.length} 张约 ¥${cv}${soon.length?`，${soon.length} 张临期`:""}。`;
+}
+
+function chat(user, html){
+  const c = $("chat");
+  const u = document.createElement("div");
+  u.style.cssText="margin:10px 0 6px;font-weight:600;color:var(--ink)";
+  u.textContent = "你：" + user;
+  const a = document.createElement("div");
+  a.style.cssText="margin:4px 0 12px;padding:10px 12px;background:#faf9f6;border-left:3px solid var(--brand);border-radius:0 9px 9px 0";
+  a.innerHTML = html;
+  c.appendChild(u); c.appendChild(a);
+  c.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+$("go").onclick = ()=>{
+  const d = collect();
+  $("out").innerHTML = report(d);
+  $("s1").className="step done"; $("s2").className="step on"; $("s3").className="step on";
+  $("out").scrollIntoView({behavior:"smooth",block:"start"});
+};
+document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
+  const d = collect(), k = c.dataset.q;
+  const qs = {exp:"我的积分会过期吗？",coupon:"券怎么用最划算？",insight:"我花得多吗？",all:"来份完整报告"}[k];
+  chat(qs, answer(d,k));
+  if(k==="all"){ $("out").innerHTML = report(d); $("s1").className="step done"; $("s2").className="step done"; $("s3").className="step on"; }
+});
+$("addc").onclick = ()=>{
+  const n = $("cn").value.trim(); if(!n) return;
+  let v = +$("cv").value;
+  if(!v){ const m = n.match(/(\d+(?:\.\d+)?)\s*元/); v = m ? +m[1] : 10; }
+  coupons.push({n, v, e: 15});
+  $("cn").value=""; $("cv").value=""; drawCoupons();
+};
+$("cn").addEventListener("keydown",e=>{if(e.key==="Enter")$("addc").click()});
+$("reset").onclick = ()=>{
+  $("avail").value=3280;$("accum").value=9120;$("exp").value=1500;$("frozen").value=0;
+  $("on").value=10;$("oa").value=387.8;
+  coupons=[{n:"麦辣鸡腿堡买一送一",v:22,e:3},{n:"满40减8 通用券",v:8,e:9},{n:"薯条中份立减5",v:5,e:20}];
+  drawCoupons(); $("out").innerHTML="";
+  $("s1").className="step on"; $("s2").className="step"; $("s3").className="step";
+};
+drawCoupons();
+</script>
+</body>
+</html>
