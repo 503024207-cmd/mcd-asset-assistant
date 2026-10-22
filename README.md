@@ -3,13 +3,25 @@
 > 把你的麦当劳**积分、优惠券、订单**，当成一笔会贬值的「资产」管起来。
 > 查询 · 优化 · 监控，三层合一。麦当劳程序员节创意开发大赛作品（非官方）。
 
-## 🎮 先试玩，30 秒看到效果
+## 🎮 30 秒看到你自己的资产
 
-**打开 `demo/index.html`**（双击即可，无需安装、无需 Token、无需联网），填入你的积分和优惠券，点一下「生成报告」——就能看到你的积分会不会过期、券该怎么花、报告会给你什么建议。
+**打开 `demo/index.html` 所在目录，起一个服务，粘贴你的 MCP Token，就能看到你自己的真实积分、优惠券和消费洞察：**
 
-> 或者看 `demo/index.html` 的在线版（如果本仓库有发布链接，直接点上面的 Demo 链接）。
+```bash
+cd demo
+python server.py          # → http://127.0.0.1:8899
+```
 
-这个离线试玩页是本项目为「让人 30 秒理解价值」专门做的：**不需要接入麦当劳账号就能玩**，也是给 README 快速体验用的。
+然后在页面里粘贴你在 [open.mcd.cn/mcp](https://open.mcd.cn/mcp) 获取的 Token，点「查我的资产」。
+
+- **真实数据**：读的是你自己的麦当劳账户（积分 / 券 / 订单 / 麦麦省可领券），不是示例数字
+- **免登录**：Token 存在浏览器 localStorage，下次打开自动查
+- **安全**：Token 只在浏览器与本次请求中，服务端不落盘、不写日志、不外传
+- **纯只读**：后端有只读工具白名单，`create-order` / `draw-lottery` 等写操作一律拒绝
+
+> 为什么需要后端？麦当劳 MCP 未开放 CORS，浏览器无法直连，必须由服务端转发。`demo/server.py` **零第三方依赖**，只用 Python 标准库。
+
+**不想接 Token？** 页面上的「先看示例」按钮会直接展示一份示例报告——用来理解这个工具在解决什么问题。
 
 ## 这是什么
 
@@ -125,7 +137,8 @@ mcd-asset-assistant/
 ├── DEVELOPMENT_PLAN.md       # 3 天冲刺排期
 ├── SUBMISSION.md             # 报名 Issue 文案
 ├── demo/
-│   └── index.html            # 🎮 交互试玩页（双击即开，零依赖）
+│   ├── index.html            # 🎮 Web 界面：粘贴 Token 即见自己真实资产
+│   └── server.py             # 轻量后端（零依赖，转发 MCP 请求）
 └── mcd_asset_assistant/      # 源码
     ├── adapter.py            # 麦当劳 MCP 适配器（数据源隔离层）
     ├── collector.py          # 真实数据采集 → 归一化 profile
@@ -135,6 +148,14 @@ mcd-asset-assistant/
     ├── mock_data.py          # 离线演示数据
     └── cli.py                # 命令行入口
 ```
+
+## 三种使用方式
+
+| 方式 | 适合谁 | 命令 |
+| --- | --- | --- |
+| **Web 界面** | 想看自己真实资产的任何人 | `cd demo && python server.py` |
+| **WorkBuddy Skill** | 在 WorkBuddy 里对话式使用 | 见 `SKILL.md` |
+| **命令行** | 开发者 / CI | `python -m mcd_asset_assistant --query --format md` |
 
 ## 路线图（扩展性）
 
