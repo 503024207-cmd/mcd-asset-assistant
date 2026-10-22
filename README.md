@@ -1,0 +1,126 @@
+# 🍔 麦门资产助手 (McD Asset Assistant)
+
+> 把你的麦当劳**积分、优惠券、订单**，当成一笔会贬值的「资产」管起来。
+> 查询 · 优化 · 监控，三层合一。麦当劳程序员节创意开发大赛作品（非官方）。
+
+---
+
+## 这是什么
+
+大多数人手机里有大把**即将过期的积分**和**躺平的优惠券**，却从没被提醒「该用了」。
+「麦门资产助手」基于**麦当劳 MCP** 真实读取你的账户数据，自动告诉你：
+
+- 哪些积分快过期了、怎么花最不亏；
+- 手里哪些券该优先用、怎么叠加最省钱；
+- 麦麦省有没有新券可领、本月有什么活动；
+- 顺手给你一份可分享的「麦门资产报告」。
+
+## 为什么做
+
+排行榜调研显示，104 个参赛项目里**前三全是「省钱」、还有一批「营养/卡路里」**——这两个方向已红海。
+而 `query-my-account`（含**即将过期/冻结积分**）、`order-list` 这类**个人资产数据几乎没人做透**。
+「把积分当资产管」是差异化强、痛点真、又容易做出传播性的切口。
+
+## 三大能力 × 真实 MCP 工具
+
+| 能力 | 说明 | 调用的麦当劳 MCP 工具 |
+| --- | --- | --- |
+| **查询** | 拉取积分 / 券 / 订单真实数据 | `query-my-account`、`query-my-coupons`、`available-coupons`、`order-list`、`mall-order-list` |
+| **优化** | 积分过期前最优用法、券组合建议 | `mall-points-products`、`query-lottery-info`、`query-my-coupons`（结合订单金额） |
+| **监控** | 新券 / 活动 / 积分临期主动提醒 | `available-coupons`、`campaign-calendar`、`query-my-account` |
+
+> 所有数据均通过麦当劳官方 MCP 实时获取，仅做只读分析，**不自动下单、不自动消费**（支付由人完成，安全边界清晰）。
+
+## 快速开始
+
+### 方式一：WorkBuddy（推荐，参赛正途）
+
+1. 在麦当劳 MCP 开放平台（open.mcd.cn/mcp）用手机号登录 → 控制台 → 激活 → 复制 **MCP Token**。
+2. 打开 WorkBuddy → 左侧「专家·技能·连接器」→「连接器」→「自定义连接器」→「配置 MCP」，粘贴：
+   ```json
+   {
+     "mcpServers": {
+       "mcd-mcp": {
+         "type": "streamablehttp",
+         "url": "https://mcp.mcd.cn",
+         "headers": { "Authorization": "Bearer 你的MCP_TOKEN" }
+       }
+     }
+   }
+   ```
+3. 启用 `mcd-mcp`，在对话框里直接说需求即可（例如「帮我看看积分会不会过期、券怎么用最划算」）。
+
+### 方式二：本地运行（本仓库代码）
+
+```bash
+pip install -r requirements.txt
+
+# 1) 离线演示（无需 Token，立刻看效果）
+python -m mcd_asset_assistant --demo --format md
+
+# 2) 真实拉取并生成报告（需配置 Token）
+export MCD_MCP_TOKEN="你的MCP_TOKEN"
+python -m mcd_asset_assistant --query --format md
+
+# 3) 一次监控扫描（发现新券 / 临期积分）
+python -m mcd_asset_assistant --monitor
+```
+
+> 也可加 `--out report.md` 把结果写入文件；`--format html` / `card` 可生成网页报告或分享卡片。
+
+## 示例输出（离线演示）
+
+```
+# 🍔 麦门资产报告
+## 一、积分资产
+- 可用积分：3280　累计：9120
+- 即将过期：1500 分（2026-11-03）
+- ⏰ 1500 积分将在 12 天后过期，建议尽快使用。
+  - 💡 用临期积分兑换「巨无霸兑换券」（1500 分），不浪费。
+## 二、优惠券
+- 名下券合计价值约 ¥35 ……
+```
+
+## 目标用户
+
+- 麦当劳会员，尤其是**积分/优惠券长年积压**、总忘记用的人；
+- 想「用 WorkBuddy + 麦当劳 MCP 做一个真正能用的 Skill」的开发者（本仓库即模板）；
+- 对「个人数字资产可视化」感兴趣的产品 / 技术爱好者。
+
+## 项目结构
+
+```
+mcd-asset-assistant/
+├── README.md                 # 本文件
+├── CONTEST_DECLARATION.md    # 参赛声明（官方原文，勿改）
+├── MCP_INTEGRATION.md        # MCP 接入说明（必交）
+├── mcp-config.example.json   # 脱敏配置示例（必交）
+├── workbuddy.md              # WorkBuddy 对话上下文（参与专项奖励必交）
+├── SKILL.md                  # WorkBuddy Skill 定义
+├── ARCHITECTURE.md           # 扩展性设计
+├── DEVELOPMENT_PLAN.md       # 3 天冲刺排期
+└── mcd_asset_assistant/      # 源码
+    ├── adapter.py            # 麦当劳 MCP 适配器（数据源隔离层）
+    ├── collector.py          # 真实数据采集 → 归一化 profile
+    ├── optimizer.py          # 积分/券/订单分析优化（纯函数）
+    ├── monitor.py            # 监控扫描（可定时触发）
+    ├── report.py             # Markdown/HTML/卡片报告
+    ├── mock_data.py          # 离线演示数据
+    └── cli.py                # 命令行入口
+```
+
+## 路线图（扩展性）
+
+当前只接了麦当劳。架构上已把「数据源」隔离在 `adapter` 层，未来可低成本扩展：
+
+- **多平台积分**：新增 `StarbucksAdapter` / `AirlineAdapter` 实现同一接口，即可把「积分资产管家」做成通用框架；
+- **监控即服务**：`monitor` 已设计为「少量只读调用 + 结构化告警」，可挂 cron / 云函数做周期性推送；
+- **消费洞察**：`order-list` 数据可生成「年度麦门账单」式分享卡片，天然利于传播。
+
+## 声明
+
+参赛作品，非麦当劳官方产品。输出仅供参考，不构成任何专业建议；餐品、价格、供应状态以麦当劳官方渠道为准。详见 `CONTEST_DECLARATION.md`。
+
+## ⭐ 求 Star
+
+排行榜 100% 看 GitHub 公开 Star。如果觉得「把积分当资产管」这个点子有意思，欢迎 Star + 提 Issue，一起把它做成真正好用的个人资产助手！
