@@ -13,7 +13,7 @@
 ## Issue 正文（整段复制，不要加空行）
 【参赛申请】
 项目名称：麦门资产助手 (McD Asset Assistant)
-项目地址：https://github.com/CMDL/mcd-asset-assistant
+项目地址：https://github.com/503024207-cmd/mcd-asset-assistant
 项目简介：基于麦当劳 MCP，把用户的积分/优惠券/订单当成会贬值的资产来管理——自动提示临期积分怎么花最值、券怎么叠最省、麦麦省新券与本月活动。查询+优化+监控三层合一，纯只读分析，安全边界清晰；支持离线演示，3 行命令出报告。
 
 ---
